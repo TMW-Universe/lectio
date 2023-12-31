@@ -95,7 +95,7 @@ export class BooksRepository {
             WHERE bc.bookId = b.id
             AND uec.userId = ${userId}
           ) AS 'userReadChaptersCount',
-          (
+          COALESCE((
             SELECT bc2.id
             FROM BookChapter bc2
             WHERE bc2.bookId = b.id
@@ -110,7 +110,14 @@ export class BooksRepository {
             )
             ORDER BY bc2.\`number\` ASC
             LIMIT 1
-          ) AS 'nextChapterId'
+          ),
+          (
+          	SELECT bc4.id
+          	FROM BookChapter bc4
+          	WHERE bc4.bookId = b.id
+          	ORDER BY bc4.\`number\` ASC
+          	LIMIT 1
+          )) AS 'nextChapterId'
         FROM Book b
         WHERE b.id IN (${Prisma.join(booksId)});`
     ).map((r) => ({
