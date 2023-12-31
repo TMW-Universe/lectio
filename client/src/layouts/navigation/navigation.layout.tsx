@@ -13,6 +13,7 @@ import styles from "./navigation.layout.module.pcss";
 import { useTheme } from "../../providers/theming/theme.provider";
 import { Theme } from "@tmw-universe/tmw-universe-types";
 import { useNetworkStatus } from "../../hooks/network/use-network-status";
+import { useTwmuAccount } from "@tmw-universe/react-tmw-universe-authentication-utils";
 
 type Props = {
   children?: JSX.Element | JSX.Element[];
@@ -23,6 +24,7 @@ export default function NavigationLayout({ children }: Props) {
   const navigate = useNavigate();
 
   const { isOnline } = useNetworkStatus();
+  const { isAuthenticated } = useTwmuAccount();
 
   const basicItems = [
     {
@@ -32,15 +34,16 @@ export default function NavigationLayout({ children }: Props) {
     },
   ];
 
-  const onlineItems = isOnline
-    ? [
-        {
-          label: t("navigation.pages.Explore"),
-          key: "explore",
-          route: routes.EXPLORE(),
-        },
-      ]
-    : [];
+  const onlineItems =
+    isOnline && isAuthenticated
+      ? [
+          {
+            label: t("navigation.pages.Explore"),
+            key: "explore",
+            route: routes.EXPLORE(),
+          },
+        ]
+      : [];
 
   const { theme } = useTheme();
 

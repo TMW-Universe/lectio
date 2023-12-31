@@ -1,9 +1,8 @@
+import { useTwmuAccount } from "@tmw-universe/react-tmw-universe-authentication-utils";
 import LibraryExplorer from "../components/books/library/library-explorer";
 
 export default function HomePage() {
-  return (
-    <>
-      <LibraryExplorer />
-    </>
-  );
+  const { isAuthenticated } = useTwmuAccount();
+
+  return <>{isAuthenticated && <LibraryExplorer />}</>;
 }
