@@ -1,5 +1,5 @@
 import { uuid } from "@tmw-universe/tmw-universe-types";
-import { Button, Col, Row, Spin, Typography } from "antd";
+import { Col, Row, Spin, Typography } from "antd";
 import useBookChapterContent from "../../../hooks/api/books/library/use-book-chapter-content";
 import { useEffect } from "react";
 import useNotification from "antd/es/notification/useNotification";
@@ -11,10 +11,7 @@ import { useDoubleTap } from "../../../hooks/screen/use-double-tap";
 import useModal from "antd/es/modal/useModal";
 import ReaderUtilities from "../reader-utilities/reader-utilities";
 import { useReaderSettings } from "../../../hooks/reader/settings/use-reader-settings";
-import { ArrowLeftOutlined, ArrowRightOutlined } from "@ant-design/icons";
-import { useNavigate } from "react-router-dom";
-import { routes } from "../../../router/routes";
-import { useMarkChapterAsRead } from "../../../hooks/reader/stats/use-mark-chapter-as-read";
+import ChapterReaderFooter from "./chapter-reader-footer";
 
 const { Title, Text } = Typography;
 
@@ -24,11 +21,8 @@ type Props = {
 
 export default function ChapterReader({ chapterId }: Props) {
   const { t } = useTranslation([Translations.BOOK_READER]);
-  const navigate = useNavigate();
 
   const { data, isLoading } = useBookChapterContent(chapterId);
-
-  const { markChapterAsRead } = useMarkChapterAsRead();
 
   // Variables
   const images = data?.data.images;
@@ -41,11 +35,6 @@ export default function ChapterReader({ chapterId }: Props) {
   const [modal, modalContext] = useModal();
 
   const { readerSettings } = useReaderSettings();
-
-  const navigateToChapter = async (chapterId: uuid) => {
-    await markChapterAsRead(chapterId);
-    navigate(routes.CHAPTER_PAGE({ chapterId }));
-  };
 
   const showReaderTools = () => {
     modal.info({
@@ -108,41 +97,15 @@ export default function ChapterReader({ chapterId }: Props) {
               />
             </Col>
           ))}
-          <Col span={24} className={styles.footer}>
-            <Row gutter={[12, 12]}>
-              <Col span={12}>
-                <Button
-                  disabled={!prevChapter}
-                  icon={<ArrowLeftOutlined />}
-                  block
-                  onClick={() => {
-                    if (prevChapter) {
-                      navigateToChapter(prevChapter.id);
-                    }
-                  }}
-                >
-                  {t("fast-nav.Prev-chapter")}
-                  {prevChapter && ` (${prevChapter.name})`}
-                </Button>
-              </Col>
-              <Col span={12}>
-                <Button
-                  disabled={!nextChapter}
-                  type="primary"
-                  icon={<ArrowRightOutlined />}
-                  block
-                  onClick={() => {
-                    if (nextChapter) {
-                      navigateToChapter(nextChapter.id);
-                    }
-                  }}
-                >
-                  {t("fast-nav.Next-chapter")}
-                  {nextChapter && ` (${nextChapter.name})`}
-                </Button>
-              </Col>
-            </Row>
-          </Col>
+          {chapter && (
+            <Col span={24}>
+              <ChapterReaderFooter
+                nextChapter={nextChapter}
+                prevChapter={prevChapter}
+                chapter={chapter}
+              />
+            </Col>
+          )}
         </Row>
       )}
     </>

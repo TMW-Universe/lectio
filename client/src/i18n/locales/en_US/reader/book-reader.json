@@ -17,6 +17,12 @@
     },
     "fast-nav": {
         "Next-chapter": "Next chapter",
-        "Prev-chapter": "Previous chapter"
+        "Prev-chapter": "Previous chapter",
+        "Mark-chapter-as-read": "Mark as read"
+    },
+    "indicators": {
+        "marked-as-read": {
+            "Text": "The chapter has been marked as read"
+        }
     }
 }
