@@ -40,7 +40,7 @@ export default function ChapterReaderFooter({
   return (
     <>
       {markedAsReadContext}
-      <Row gutter={[12, 12]} className={styles.footer}>
+      <Row gutter={[12, 12]} justify="center" className={styles.footer}>
         <Col xs={24} md={12}>
           <Button
             disabled={!prevChapter}
