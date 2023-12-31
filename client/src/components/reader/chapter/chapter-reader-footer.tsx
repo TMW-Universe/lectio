@@ -74,7 +74,6 @@ export default function ChapterReaderFooter({
         </Col>
         <Col xs={24} md={12}>
           <Button
-            disabled={!nextChapter}
             icon={<CheckOutlined />}
             block
             onClick={async () => {
