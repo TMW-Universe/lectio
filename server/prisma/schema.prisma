@@ -1,0 +1,131 @@
+generator client {
+  provider      = "prisma-client-js"
+  binaryTargets = ["native", "linux-musl-openssl-3.0.x"]
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+model Book {
+  id               String    @id @default(uuid()) @db.VarChar(36)
+  datasourceBookId String    @db.VarChar(64)
+  name             String    @db.VarChar(128)
+  synopsis         String    @db.VarChar(10000)
+  publishedAt      DateTime? @db.Date()
+  language         String
+  coverImageId     String    @db.VarChar(36)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  AuthorAssignation     AuthorAssignation[]
+  CategoriesAssignation CategoriesAssignation[]
+  Datasource            Datasource              @relation(fields: [datasourceId], references: [id])
+  datasourceId          String                  @db.VarChar(36)
+  BookChapter           BookChapter[]
+
+  @@unique([datasourceBookId, datasourceId])
+  @@index([language])
+  @@index([name])
+}
+
+model Author {
+  id   String @id @default(uuid()) @db.VarChar(36)
+  name String @db.VarChar(128)
+
+  createdAt          DateTime            @default(now())
+  updatedAt          DateTime            @updatedAt
+  AuthorAssignations AuthorAssignation[]
+}
+
+model AuthorAssignation {
+  id String @id @default(uuid()) @db.VarChar(36)
+
+  createdAt DateTime @default(now())
+
+  Author   Author @relation(fields: [authorId], references: [id])
+  authorId String @db.VarChar(36)
+
+  Book   Book   @relation(fields: [bookId], references: [id])
+  bookId String @db.VarChar(36)
+}
+
+model BookCategory {
+  id   String @id @default(uuid()) @db.VarChar(36)
+  name String @db.VarChar(64)
+
+  createdAt DateTime @default(now())
+
+  CategoriesAssignation CategoriesAssignation[]
+}
+
+model CategoriesAssignation {
+  id String @id @default(uuid()) @db.VarChar(36)
+
+  createdAt DateTime @default(now())
+
+  Book   Book   @relation(fields: [bookId], references: [id])
+  bookId String @db.VarChar(36)
+
+  BookCategory   BookCategory @relation(fields: [bookCategoryId], references: [id])
+  bookCategoryId String       @db.VarChar(36)
+}
+
+model BookChapter {
+  id     String @id @default(uuid()) @db.VarChar(36)
+  code   String @db.VarChar(64)
+  name   String @db.VarChar(128)
+  number Int
+
+  Book   Book   @relation(fields: [bookId], references: [id])
+  bookId String @db.VarChar(36)
+
+  ChapterContent    ChapterContent[]
+  UserEndedChapters UserEndedChapters[]
+}
+
+model ChapterContent {
+  id          String @id @default(uuid()) @db.VarChar(36)
+  imageFileId String @db.VarChar(36)
+  number      Int
+
+  BookChapter BookChapter @relation(fields: [bookChapterId], references: [id])
+
+  createdAt     DateTime @default(now())
+  bookChapterId String   @db.VarChar(36)
+
+  @@index([bookChapterId, number])
+}
+
+// Datasource
+
+model Datasource {
+  id       String  @id @default(uuid()) @db.VarChar(36)
+  code     String  @unique @db.VarChar(32)
+  name     String  @db.VarChar(32)
+  url      String  @db.VarChar(512)
+  apiKey   String? @db.VarChar(256)
+  enabled  Boolean @default(true)
+  standard String? @db.VarChar(32)
+
+  createdAt DateTime @default(now())
+
+  Book Book[]
+}
+
+// Progress
+
+model UserEndedChapters {
+  id                String   @id @default(uuid()) @db.VarChar(36)
+  userId            String   @db.VarChar(36)
+  bookChapterId     String   @db.VarChar(36)
+  finishedReadingAt DateTime @default(now())
+
+  createdAt DateTime @default(now())
+
+  BookChapter BookChapter @relation(fields: [bookChapterId], references: [id])
+
+  @@unique([userId, bookChapterId])
+}

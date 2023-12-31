@@ -1,0 +1,28 @@
+version: '3'
+
+services:
+  client:
+    container_name: lectio-client_DEV
+    build:
+      context: ./client
+      dockerfile: Dockerfile.dev
+    volumes:
+      - ./client:/app/client
+    ports:
+      - '${CLIENT_PORT}:${CLIENT_PORT}'
+    expose:
+      - '${CLIENT_PORT}'
+    command: "npm run dev"
+    environment:
+      - CHOKIDAR_USEPOLLING=true
+    tty: true
+
+  server:
+    container_name: lectio-server_DEV
+    build:
+      context: ./server
+      dockerfile: Dockerfile.dev
+    ports:
+      - '${SERVER_PORT}:${SERVER_PORT}'
+    expose:
+      - '${SERVER_PORT}'
