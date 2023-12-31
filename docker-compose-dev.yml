@@ -24,5 +24,7 @@ services:
       dockerfile: Dockerfile.dev
     ports:
       - '${SERVER_PORT}:${SERVER_PORT}'
+    volumes:
+      - ./server/src:/app/server/src
     expose:
       - '${SERVER_PORT}'
