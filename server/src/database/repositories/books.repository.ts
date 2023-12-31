@@ -101,11 +101,11 @@ export class BooksRepository {
             WHERE bc2.bookId = b.id
             AND bc2.number > (
               SELECT bc3.number
-              FROM BookChapter bc3
-              INNER JOIN UserEndedChapters uec2 ON uec2.bookChapterId = bc3.id 
+              FROM UserEndedChapters uec2
+              INNER JOIN BookChapter bc3 ON bc3.id = uec2.bookChapterId
               WHERE uec2.userId = ${userId}
               AND bc3.bookId = b.id
-              ORDER BY bc3.\`number\` ASC
+              ORDER BY bc3.\`number\` DESC
               LIMIT 1
             )
             ORDER BY bc2.\`number\` ASC

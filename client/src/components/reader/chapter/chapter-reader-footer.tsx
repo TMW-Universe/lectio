@@ -33,7 +33,7 @@ export default function ChapterReaderFooter({
   const { markChapterAsRead } = useMarkChapterAsRead();
 
   const navigateToChapter = async (chapterId: uuid) => {
-    await markChapterAsRead(chapterId);
+    await markChapterAsRead(chapter.id);
     navigate(routes.CHAPTER_PAGE({ chapterId }));
   };
 
