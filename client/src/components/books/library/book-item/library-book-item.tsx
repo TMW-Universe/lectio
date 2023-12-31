@@ -36,7 +36,7 @@ export default function LibraryBookItem({ book }: Props) {
             aria-description="Cover image"
             loading="lazy"
           />
-          <div className={styles.progress} style={{ backgroundColor: gray[1] }}>
+          <div className={styles.progress} style={{ backgroundColor: gray[2] }}>
             <div
               style={{ backgroundColor: green[5], width: `${bookProgress}%` }}
             ></div>
