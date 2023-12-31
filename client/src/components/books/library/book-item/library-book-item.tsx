@@ -1,14 +1,14 @@
 import { Card } from "antd";
-import { Book } from "../../../../models/books/book.model";
 import { useNavigate } from "react-router-dom";
 import { routes } from "../../../../router/routes";
 import LanguageFlag from "../../../common/country-flag/language-flag";
 import { Language } from "@tmw-universe/tmw-universe-types";
 import styles from "./library-book-item.module.pcss";
 import { gray, green } from "@ant-design/colors";
+import { BookWithStats } from "../../../../models/books/book-with-stats.model";
 
 type Props = {
-  book: Book;
+  book: BookWithStats;
 };
 
 export default function LibraryBookItem({ book }: Props) {
@@ -17,6 +17,9 @@ export default function LibraryBookItem({ book }: Props) {
   const navigateToBook = () => {
     navigate(routes.BOOK_PAGE({ bookId: book.id }));
   };
+
+  const bookProgress =
+    (book.stats.userReadChaptersCount * 100) / book.stats.chaptersCount;
 
   return (
     <Card
@@ -34,7 +37,9 @@ export default function LibraryBookItem({ book }: Props) {
             loading="lazy"
           />
           <div className={styles.progress} style={{ backgroundColor: gray[1] }}>
-            <div style={{ backgroundColor: green[5], width: "50%" }}></div>
+            <div
+              style={{ backgroundColor: green[5], width: `${bookProgress}%` }}
+            ></div>
           </div>
         </>
       }
