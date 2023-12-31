@@ -77,7 +77,12 @@ export class BooksRepository {
   ) {
     return (
       await (options?.transaction ?? this.databaseService).$queryRaw<
-        { id: uuid; chaptersCount: number; userReadChaptersCount: number }[]
+        {
+          id: uuid;
+          chaptersCount: number;
+          userReadChaptersCount: number;
+          nextChapterId?: uuid | null;
+        }[]
       >`SELECT b.id, (
             SELECT COUNT(bc.id)
             FROM BookChapter bc
@@ -89,7 +94,23 @@ export class BooksRepository {
             INNER JOIN UserEndedChapters uec ON uec.bookChapterId = bc.id
             WHERE bc.bookId = b.id
             AND uec.userId = ${userId}
-          ) AS 'userReadChaptersCount'
+          ) AS 'userReadChaptersCount',
+          (
+            SELECT bc2.id
+            FROM BookChapter bc2
+            WHERE bc2.bookId = b.id
+            AND bc2.number > (
+              SELECT bc3.number
+              FROM BookChapter bc3
+              INNER JOIN UserEndedChapters uec2 ON uec2.bookChapterId = bc3.id 
+              WHERE uec2.userId = ${userId}
+              AND bc3.bookId = b.id
+              ORDER BY bc3.\`number\` ASC
+              LIMIT 1
+            )
+            ORDER BY bc2.\`number\` ASC
+            LIMIT 1
+          ) AS 'nextChapterId'
         FROM Book b
         WHERE b.id IN (${Prisma.join(booksId)});`
     ).map((r) => ({

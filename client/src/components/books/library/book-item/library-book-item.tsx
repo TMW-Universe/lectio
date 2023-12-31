@@ -1,11 +1,12 @@
-import { Card } from "antd";
+import { Button, Card } from "antd";
 import { useNavigate } from "react-router-dom";
 import { routes } from "../../../../router/routes";
 import LanguageFlag from "../../../common/country-flag/language-flag";
-import { Language } from "@tmw-universe/tmw-universe-types";
+import { Language, uuid } from "@tmw-universe/tmw-universe-types";
 import styles from "./library-book-item.module.pcss";
 import { gray, green } from "@ant-design/colors";
 import { BookWithStats } from "../../../../models/books/book-with-stats.model";
+import { PlayCircleOutlined } from "@ant-design/icons";
 
 type Props = {
   book: BookWithStats;
@@ -16,6 +17,10 @@ export default function LibraryBookItem({ book }: Props) {
 
   const navigateToBook = () => {
     navigate(routes.BOOK_PAGE({ bookId: book.id }));
+  };
+
+  const navigateToChapter = (chapterId: uuid) => {
+    navigate(routes.CHAPTER_PAGE({ chapterId }));
   };
 
   const bookProgress =
@@ -49,6 +54,18 @@ export default function LibraryBookItem({ book }: Props) {
           className={styles.flag}
           language={book.language as Language}
         />
+        <div>
+          <Button
+            disabled={!book.stats.nextChapterId}
+            onClick={(e) => {
+              e.stopPropagation();
+              if (book.stats.nextChapterId)
+                navigateToChapter(book.stats.nextChapterId);
+            }}
+            icon={<PlayCircleOutlined />}
+            type="link"
+          />
+        </div>
       </div>
     </Card>
   );
