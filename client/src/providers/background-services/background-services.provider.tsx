@@ -1,3 +1,4 @@
+import { useTwmuAccount } from "@tmw-universe/react-tmw-universe-authentication-utils";
 import { useAutoChaptersSync } from "../../hooks/background-services/use-auto-chapters-sync";
 
 type Props = {
@@ -5,8 +6,15 @@ type Props = {
 };
 
 export default function BackgroundServicesProvider({ children }: Props) {
-  // Auto chapters sync service
+  const { isAuthenticated } = useTwmuAccount();
+
+  if (!isAuthenticated) return children;
+
+  return <ChaptersSync>{children}</ChaptersSync>;
+}
+
+const ChaptersSync = ({ children }: Props) => {
   useAutoChaptersSync();
 
   return children;
-}
+};

@@ -7,9 +7,9 @@ services:
       context: ./client
       dockerfile: Dockerfile
     ports:
-      - 8003:8003
-    env_file:
-      - ./client/.env
+      - ${CLIENT_PORT}:${CLIENT_PORT}
+    expose:
+      - ${CLIENT_PORT}
     volumes:
       - './client/ssl:/client/etc/nginx/cert'
 
@@ -19,7 +19,6 @@ services:
       context: ./server
       dockerfile: Dockerfile
     ports:
-      - "8080:8080"  # Assuming NestJS server runs on port 8080
-    # Other configurations for the server service
-    environment:
-      - HTTPS=true  # Environment variable for enabling HTTPS
+      - '${SERVER_PORT}:${SERVER_PORT}'
+    expose:
+      - '${SERVER_PORT}'
