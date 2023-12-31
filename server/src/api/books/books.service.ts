@@ -14,19 +14,33 @@ export class BooksService {
     private readonly warehouseService: WarehouseService,
   ) {}
 
-  async findBooks(dataEntryObject: DataFetchEntryObject<Book>) {
+  async findUserBooks(
+    userId: uuid,
+    dataEntryObject: DataFetchEntryObject<Book>,
+  ) {
     const books = await this.booksRepository.findBooks(dataEntryObject);
+    const bookStats =
+      await this.booksRepository.findUserBooksEndedChaptersStats(
+        userId,
+        books.rows.map((b) => b.id),
+      );
     return {
       ...books,
       rows: await Promise.all(
-        books.rows.map(async (book) => ({
-          ...book,
-          coverImageUrl: (
-            await this.warehouseService.generateFileAccess({
-              fileId: book.coverImageId,
-            })
-          ).url,
-        })),
+        books.rows.map(async (book) => {
+          // eslint-disable-next-line @typescript-eslint/no-unused-vars
+          const { id: _, ...stats } = bookStats.find((b) => b.id === book.id);
+
+          return {
+            ...book,
+            stats,
+            coverImageUrl: (
+              await this.warehouseService.generateFileAccess({
+                fileId: book.coverImageId,
+              })
+            ).url,
+          };
+        }),
       ),
     };
   }

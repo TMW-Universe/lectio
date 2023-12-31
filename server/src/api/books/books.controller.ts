@@ -7,14 +7,19 @@ import {
 import { Book } from '@prisma/client';
 import { BOOK_DMD } from '../../database/model-definitions/book.data-model-definition';
 import { uuid } from '@tmw-universe/tmw-universe-types';
+import { UserId } from '@tmw-universe/tmw-universe-nestjs-auth-utils';
 
 @Controller('books')
 export class BooksController {
   constructor(private readonly booksService: BooksService) {}
 
   @Get('list')
-  async findBooks(@Query() dataEntry: DataFetchEntryDTO) {
-    return await this.booksService.findBooks(
+  async findBooks(
+    @Query() dataEntry: DataFetchEntryDTO,
+    @UserId() userId: uuid,
+  ) {
+    return await this.booksService.findUserBooks(
+      userId,
       new DataFetchParser<Book>(dataEntry, BOOK_DMD).parse(),
     );
   }

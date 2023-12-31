@@ -70,6 +70,35 @@ export class BooksRepository {
     };
   }
 
+  async findUserBooksEndedChaptersStats(
+    userId: uuid,
+    booksId: uuid[],
+    options?: RepositoryOptions,
+  ) {
+    return (
+      await (options?.transaction ?? this.databaseService).$queryRaw<
+        { id: uuid; chaptersCount: number; userReadChaptersCount: number }[]
+      >`SELECT b.id, (
+            SELECT COUNT(bc.id)
+            FROM BookChapter bc
+            WHERE bc.bookId = b.id
+          ) AS 'chaptersCount',
+          (
+            SELECT COUNT(uec.id)
+            FROM BookChapter bc
+            INNER JOIN UserEndedChapters uec ON uec.bookChapterId = bc.id
+            WHERE bc.bookId = b.id
+            AND uec.userId = ${userId}
+          ) AS 'userReadChaptersCount'
+        FROM Book b
+        WHERE b.id IN (${Prisma.join(booksId)});`
+    ).map((r) => ({
+      ...r,
+      chaptersCount: +r.chaptersCount.toString(),
+      userReadChaptersCount: +r.userReadChaptersCount.toString(),
+    }));
+  }
+
   async findBookById(bookId: uuid, options?: RepositoryOptions) {
     return await (options?.transaction ?? this.databaseService).book.findFirst({
       where: { id: bookId },
