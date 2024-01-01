@@ -37,6 +37,30 @@ export class BookChaptersRepository {
     });
   }
 
+  async findChaptersWithUserReadStatsByBookId(
+    userId: uuid,
+    bookId: uuid,
+    options?: RepositoryOptions,
+  ) {
+    return await (
+      options?.transaction ?? this.databaseService
+    ).bookChapter.findMany({
+      where: {
+        bookId,
+      },
+      include: {
+        UserEndedChapters: {
+          where: {
+            userId,
+          },
+          select: {
+            id: true,
+          },
+        },
+      },
+    });
+  }
+
   async countImagesByChapter(chapterId: uuid, options?: RepositoryOptions) {
     return await (
       options?.transaction ?? this.databaseService
