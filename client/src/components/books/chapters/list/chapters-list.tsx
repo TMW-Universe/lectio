@@ -5,6 +5,7 @@ import styles from "./chapters-list.module.pcss";
 import { useNavigate } from "react-router-dom";
 import { routes } from "../../../../router/routes";
 import { uuid } from "@tmw-universe/tmw-universe-types";
+import ChaptersListIndex from "./index/chapters-list-index";
 
 const { Title, Text } = Typography;
 
@@ -23,8 +24,15 @@ export default function ChaptersList({ chapters: rawChapters }: Props) {
 
   return (
     <Row gutter={[12, 12]}>
+      <Col span={24}>
+        <ChaptersListIndex chapters={chapters} />
+      </Col>
       {chapters.map((chapter) => (
-        <Col span={24} key={chapter.id}>
+        <Col
+          span={24}
+          key={chapter.id}
+          id={`_chapter_list_item_${chapter.number}`}
+        >
           <Card
             hoverable
             role="button"
