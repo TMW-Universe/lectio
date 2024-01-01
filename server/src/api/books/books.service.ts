@@ -64,4 +64,11 @@ export class BooksService {
   async findChaptersByBookId(bookId: uuid) {
     return await this.bookChaptersRepository.findChaptersByBookId(bookId);
   }
+
+  async findUserReadChaptersByBookId(userId: uuid, bookId: uuid) {
+    return await this.bookChaptersRepository.findUserReadChaptersByBookId(
+      userId,
+      bookId,
+    );
+  }
 }

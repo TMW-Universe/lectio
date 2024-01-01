@@ -37,4 +37,17 @@ export class BooksController {
   ) {
     return { chapters: await this.booksService.findChaptersByBookId(bookId) };
   }
+
+  @Get(':bookId/read-chapters')
+  async getBookReadChaptersById(
+    @Param('bookId', new ParseUUIDPipe({ version: '4' })) bookId: uuid,
+    @UserId() userId: uuid,
+  ) {
+    return {
+      chapters: await this.booksService.findUserReadChaptersByBookId(
+        userId,
+        bookId,
+      ),
+    };
+  }
 }

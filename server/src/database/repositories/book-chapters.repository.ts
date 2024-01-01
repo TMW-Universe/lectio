@@ -118,4 +118,25 @@ export class BookChaptersRepository {
       },
     });
   }
+
+  async findUserReadChaptersByBookId(
+    userId: uuid,
+    bookId: uuid,
+    options?: RepositoryOptions,
+  ) {
+    return await (
+      options?.transaction ?? this.databaseService
+    ).bookChapter.findMany({
+      where: {
+        bookId,
+      },
+      include: {
+        UserEndedChapters: {
+          where: {
+            userId,
+          },
+        },
+      },
+    });
+  }
 }
