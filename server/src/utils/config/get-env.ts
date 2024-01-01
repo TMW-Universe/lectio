@@ -20,11 +20,6 @@ const getNumberFromString = (value: string | undefined, def: number) => {
   return num;
 };
 
-const getOptionalString = (value: string | undefined, def: string) => {
-  if (!value || value === '') return def;
-  return value;
-};
-
 export const getEnv = (): EnvFile => {
   const env = process.env as unknown as RawEnvFile;
 
@@ -49,6 +44,7 @@ export const getEnv = (): EnvFile => {
     warehouseHost: env.WAREHOUSE_HOST,
 
     scrapperApiKeyEncKey: env.SCRAPPER_API_KEY_ENC_KEY,
+    https: getBooleanFromString(env.HTTPS, true),
   };
 };
 
@@ -73,6 +69,8 @@ interface EnvFile {
   warehouseHost: string;
 
   scrapperApiKeyEncKey: string;
+
+  https: boolean;
 }
 
 class RawEnvFile {
@@ -94,4 +92,6 @@ class RawEnvFile {
   WAREHOUSE_HOST: string;
 
   SCRAPPER_API_KEY_ENC_KEY: string;
+
+  HTTPS?: string;
 }

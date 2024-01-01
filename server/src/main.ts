@@ -4,11 +4,22 @@ import { getEnv } from './utils/config/get-env';
 import { ValidationPipe } from '@nestjs/common';
 import helmet from 'helmet';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
+import * as fs from 'fs';
 
 async function bootstrap() {
-  const { port, helmet: useHelmet, openApi: useOpenApi } = getEnv();
+  const { port, helmet: useHelmet, openApi: useOpenApi, https } = getEnv();
 
-  const app = await NestFactory.create(AppModule);
+  const app = await NestFactory.create(
+    AppModule,
+    https
+      ? {
+          httpsOptions: {
+            key: fs.readFileSync('/app/server/certificates/key.pem'),
+            cert: fs.readFileSync('/app/server/certificates/cert.pem'),
+          },
+        }
+      : {},
+  );
 
   if (useHelmet) app.use(helmet());
 

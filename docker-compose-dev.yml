@@ -26,5 +26,6 @@ services:
       - '${SERVER_PORT}:${SERVER_PORT}'
     volumes:
       - ./server/src:/app/server/src
+      - ./server/certificates:/app/server/certificates
     expose:
       - '${SERVER_PORT}'

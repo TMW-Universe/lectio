@@ -1,0 +1,5 @@
+{
+  "dependencies": {
+    "@tmw-universe/tmw-universe-nestjs-warehouse-sdk": "^1.2.1"
+  }
+}
