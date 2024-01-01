@@ -1,6 +1,6 @@
 import { Card, Col, Row, Typography } from "antd";
 import { BookChapter } from "../../../../models/books/book-chapter.model";
-import { gold } from "@ant-design/colors";
+import { gold, green } from "@ant-design/colors";
 import styles from "./chapters-list.module.pcss";
 import { useNavigate } from "react-router-dom";
 import { routes } from "../../../../router/routes";
@@ -9,7 +9,7 @@ import { uuid } from "@tmw-universe/tmw-universe-types";
 const { Title, Text } = Typography;
 
 type Props = {
-  chapters: BookChapter[];
+  chapters: (BookChapter & { UserEndedChapters: { id: uuid }[] })[];
 };
 
 export default function ChaptersList({ chapters: rawChapters }: Props) {
@@ -34,7 +34,10 @@ export default function ChaptersList({ chapters: rawChapters }: Props) {
             <div className={styles.chapter}>
               <div
                 className={styles.number}
-                style={{ backgroundColor: gold[3] }}
+                style={{
+                  backgroundColor:
+                    chapter.UserEndedChapters.length > 0 ? green[3] : gold[3],
+                }}
               >
                 <Text>{chapter.number}</Text>
               </div>
