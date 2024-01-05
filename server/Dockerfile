@@ -17,6 +17,7 @@ COPY . .
 
 # Build image
 RUN npm run build
+RUN npx prisma generate
 
 # Deploy database
 RUN npm run prisma:migrate:prod
