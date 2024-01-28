@@ -177,16 +177,10 @@ export class CatalogService {
   async rescanBookByBookId(bookId: uuid) {
     return await this.databaseService.$transaction(async (transaction) => {
       // Get the book
-      const {
-        AuthorAssignation: authorAssignation,
-        BookChapter: chapters,
-        ...book
-      } = await this.booksRepository.findBookWithChaptersAndAuthorsById(
-        bookId,
-        {
+      const { BookChapter: chapters, ...book } =
+        await this.booksRepository.findBookWithChaptersAndAuthorsById(bookId, {
           transaction,
-        },
-      );
+        });
 
       // Generate datasource client
       const datasourceClient = this.bookDatasourcesProvider.getDatasourceClient(
