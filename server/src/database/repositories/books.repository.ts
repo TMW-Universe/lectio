@@ -165,4 +165,17 @@ export class BooksRepository {
       },
     });
   }
+
+  async updateBookById(
+    bookId: uuid,
+    data: Prisma.BookUpdateInput,
+    options?: RepositoryOptions,
+  ) {
+    return await (options?.transaction ?? this.databaseService).book.update({
+      where: {
+        id: bookId,
+      },
+      data,
+    });
+  }
 }

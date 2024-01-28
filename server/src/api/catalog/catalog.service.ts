@@ -197,6 +197,17 @@ export class CatalogService {
       const latestBookData = await datasourceClient.getBookInfo(
         book.datasourceBookId,
       );
+
+      // Update book info
+      await this.booksRepository.updateBookById(
+        bookId,
+        {
+          name: latestBookData.name,
+          synopsis: latestBookData.synopsis,
+          language: latestBookData.language,
+        },
+        { transaction },
+      );
     });
   }
 }
