@@ -1,4 +1,11 @@
-import { Controller, Get, Param, ParseUUIDPipe, Query } from '@nestjs/common';
+import {
+  Controller,
+  Get,
+  Param,
+  ParseUUIDPipe,
+  Post,
+  Query,
+} from '@nestjs/common';
 import { CatalogService } from './catalog.service';
 import { ExploreBooksDTO } from 'src/dtos/catalog/explore-books.dto';
 import { uuid } from '@tmw-universe/tmw-universe-types';

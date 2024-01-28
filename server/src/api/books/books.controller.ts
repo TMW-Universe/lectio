@@ -1,4 +1,11 @@
-import { Controller, Get, Param, ParseUUIDPipe, Query } from '@nestjs/common';
+import {
+  Controller,
+  Get,
+  Param,
+  ParseUUIDPipe,
+  Post,
+  Query,
+} from '@nestjs/common';
 import { BooksService } from './books.service';
 import {
   DataFetchEntryDTO,
@@ -55,5 +62,12 @@ export class BooksController {
         bookId,
       ),
     };
+  }
+
+  @Post('rescan/:bookId')
+  async rescanBookByBookId(
+    @Param('bookId', new ParseUUIDPipe({ version: '4' })) bookId: uuid,
+  ) {
+    return await this.booksService.rescanBookByBookId(bookId);
   }
 }
