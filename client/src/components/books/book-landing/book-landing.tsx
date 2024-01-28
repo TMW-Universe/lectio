@@ -1,24 +1,12 @@
 import { Language, uuid } from "@tmw-universe/tmw-universe-types";
 import useBook from "../../../hooks/api/books/library/use-book";
-import {
-  Button,
-  Col,
-  Flex,
-  Image,
-  Popover,
-  Row,
-  Skeleton,
-  Typography,
-} from "antd";
+import { Col, Flex, Image, Row, Skeleton, Typography } from "antd";
 import styles from "./book-landing.module.pcss";
 import CategoryTag from "../categories/category-tag/category-tag";
 import useBookChapters from "../../../hooks/api/books/library/use-book-chapters";
 import ChaptersList from "../chapters/list/chapters-list";
 import LanguageFlag from "../../common/country-flag/language-flag";
-import { useTranslation } from "react-i18next";
-import { Translations } from "../../../i18n/translations.enum";
-import { ReloadOutlined } from "@ant-design/icons";
-import { useBookRescan } from "../../../hooks/api/books/catalog/use-book-rescan";
+import BookRescanButton from "./rescan/book-rescan-button";
 
 const { Title, Text } = Typography;
 
@@ -27,17 +15,11 @@ type Props = {
 };
 
 export default function BookLanding({ bookId }: Props) {
-  const { t } = useTranslation([Translations.BOOK_LANDING]);
-
-  const { isPending, mutateAsync } = useBookRescan();
-
   const { data } = useBook(bookId);
   const { data: chaptersData } = useBookChapters(bookId);
 
   const book = data?.data;
   const bookChapters = chaptersData?.data.chapters;
-
-  const rescan = async () => await mutateAsync(bookId);
 
   return (
     <Row gutter={[24, 24]}>
@@ -66,15 +48,7 @@ export default function BookLanding({ bookId }: Props) {
             </div>
           </div>
           <div>
-            <Popover title={t("actions.rescan.Description")}>
-              <Button
-                loading={isPending}
-                onClick={rescan}
-                icon={<ReloadOutlined />}
-              >
-                {t("actions.rescan.Text")}
-              </Button>
-            </Popover>
+            <BookRescanButton bookId={bookId} />
           </div>
         </Flex>
       </Col>
