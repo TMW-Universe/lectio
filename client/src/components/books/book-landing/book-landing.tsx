@@ -1,11 +1,12 @@
 import { Language, uuid } from "@tmw-universe/tmw-universe-types";
 import useBook from "../../../hooks/api/books/library/use-book";
-import { Col, Image, Row, Skeleton, Typography } from "antd";
+import { Col, Flex, Image, Row, Skeleton, Typography } from "antd";
 import styles from "./book-landing.module.pcss";
 import CategoryTag from "../categories/category-tag/category-tag";
 import useBookChapters from "../../../hooks/api/books/library/use-book-chapters";
 import ChaptersList from "../chapters/list/chapters-list";
 import LanguageFlag from "../../common/country-flag/language-flag";
+import BookRescanButton from "./rescan/book-rescan-button";
 
 const { Title, Text } = Typography;
 
@@ -31,18 +32,25 @@ export default function BookLanding({ bookId }: Props) {
         />
       </Col>
       <Col xs={24} md={16} xl={18}>
-        <Title className={styles.title}>
-          {book?.language && (
-            <LanguageFlag
-              className={styles.language}
-              language={book.language as Language}
-            />
-          )}{" "}
-          {book?.name}
-        </Title>
-        <div className={styles.synopsis}>
-          {book ? <Text>{book.synopsis}</Text> : <Skeleton />}
-        </div>
+        <Flex>
+          <div>
+            <Title className={styles.title}>
+              {book?.language && (
+                <LanguageFlag
+                  className={styles.language}
+                  language={book.language as Language}
+                />
+              )}{" "}
+              {book?.name}
+            </Title>
+            <div className={styles.synopsis}>
+              {book ? <Text>{book.synopsis}</Text> : <Skeleton />}
+            </div>
+          </div>
+          <div>
+            <BookRescanButton bookId={bookId} />
+          </div>
+        </Flex>
       </Col>
       <Col span={24}>
         <div className={styles.categories}>

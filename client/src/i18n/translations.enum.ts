@@ -6,6 +6,9 @@ export enum Translations {
   BOOKS_CATALOG_EXPLORER = "b_catalog_explorer",
   BOOK_READER = "b_reader",
 
+  // Book landing
+  BOOK_LANDING = "b_landing",
+
   // TMW Universe
   TMWU_AUTH = "tmwu_auth",
 }

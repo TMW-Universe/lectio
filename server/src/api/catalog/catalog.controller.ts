@@ -1,4 +1,11 @@
-import { Controller, Get, Param, ParseUUIDPipe, Query } from '@nestjs/common';
+import {
+  Controller,
+  Get,
+  Param,
+  ParseUUIDPipe,
+  Post,
+  Query,
+} from '@nestjs/common';
 import { CatalogService } from './catalog.service';
 import { ExploreBooksDTO } from 'src/dtos/catalog/explore-books.dto';
 import { uuid } from '@tmw-universe/tmw-universe-types';
@@ -19,5 +26,13 @@ export class CatalogController {
     @Param('bookId') bookId: string,
   ) {
     return await this.explorerService.addBook(datasourceId, bookId);
+  }
+
+  @Post('rescan/:bookId')
+  async rescanBookByBookId(
+    // bookId is the database book id (not the datasource id)
+    @Param('bookId', new ParseUUIDPipe({ version: '4' })) bookId: uuid,
+  ) {
+    return await this.explorerService.rescanBookByBookId(bookId);
   }
 }

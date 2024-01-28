@@ -1,0 +1,11 @@
+{
+    "actions": {
+        "rescan": {
+            "Text": "Rescan",
+            "Description": "Check if the book has received any update",
+            "too-many-requests": {
+                "Message": "This book has been scanned in the latest hour. Please, wait before scanning it again."
+            }
+        }
+    }
+}

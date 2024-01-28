@@ -25,6 +25,7 @@ model Book {
   Datasource            Datasource              @relation(fields: [datasourceId], references: [id])
   datasourceId          String                  @db.VarChar(36)
   BookChapter           BookChapter[]
+  BookScan              BookScan[]
 
   @@unique([datasourceBookId, datasourceId])
   @@index([language])
@@ -128,4 +129,18 @@ model UserEndedChapters {
   BookChapter BookChapter @relation(fields: [bookChapterId], references: [id])
 
   @@unique([userId, bookChapterId])
+}
+
+// Book scans
+
+model BookScan {
+  id String @id @default(uuid())
+
+  createdAt DateTime @default(now())
+
+  // Associations
+  Book   Book   @relation(fields: [bookId], references: [id])
+  bookId String @db.VarChar(36)
+
+  @@index([createdAt])
 }
