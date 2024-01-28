@@ -18,6 +18,7 @@ import LanguageFlag from "../../common/country-flag/language-flag";
 import { useTranslation } from "react-i18next";
 import { Translations } from "../../../i18n/translations.enum";
 import { ReloadOutlined } from "@ant-design/icons";
+import { useBookRescan } from "../../../hooks/api/books/catalog/use-book-rescan";
 
 const { Title, Text } = Typography;
 
@@ -28,11 +29,15 @@ type Props = {
 export default function BookLanding({ bookId }: Props) {
   const { t } = useTranslation([Translations.BOOK_LANDING]);
 
+  const { isPending, mutateAsync } = useBookRescan();
+
   const { data } = useBook(bookId);
   const { data: chaptersData } = useBookChapters(bookId);
 
   const book = data?.data;
   const bookChapters = chaptersData?.data.chapters;
+
+  const rescan = async () => await mutateAsync(bookId);
 
   return (
     <Row gutter={[24, 24]}>
@@ -62,7 +67,11 @@ export default function BookLanding({ bookId }: Props) {
           </div>
           <div>
             <Popover title={t("actions.rescan.Description")}>
-              <Button icon={<ReloadOutlined />}>
+              <Button
+                loading={isPending}
+                onClick={rescan}
+                icon={<ReloadOutlined />}
+              >
                 {t("actions.rescan.Text")}
               </Button>
             </Popover>
