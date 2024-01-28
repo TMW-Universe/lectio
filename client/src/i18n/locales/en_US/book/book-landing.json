@@ -1,0 +1,8 @@
+{
+    "actions": {
+        "rescan": {
+            "Text": "Rescan",
+            "Description": "Check if the book has received any update"
+        }
+    }
+}
