@@ -208,6 +208,22 @@ export class CatalogService {
         },
         { transaction },
       );
+
+      // Detect new chapters
+      const newChapters = latestBookData.chapters.filter(
+        ({ code }) => !chapters.find((c) => c.code === code),
+      );
+
+      // Add missing chapters
+      await this.bookChaptersRepository.addBookChapters(
+        newChapters.map((chapter) => ({
+          ...chapter,
+          bookId: book.id,
+        })),
+        {
+          transaction,
+        },
+      );
     });
   }
 }
