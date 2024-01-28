@@ -27,4 +27,12 @@ export class CatalogController {
   ) {
     return await this.explorerService.addBook(datasourceId, bookId);
   }
+
+  @Post('rescan/:bookId')
+  async rescanBookByBookId(
+    // bookId is the database book id (not the datasource id)
+    @Param('bookId', new ParseUUIDPipe({ version: '4' })) bookId: uuid,
+  ) {
+    return await this.explorerService.rescanBookByBookId(bookId);
+  }
 }

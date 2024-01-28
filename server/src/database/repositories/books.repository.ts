@@ -133,6 +133,23 @@ export class BooksRepository {
     });
   }
 
+  async findBookWithChaptersAndAuthorsById(
+    bookId: uuid,
+    options?: RepositoryOptions,
+  ) {
+    return await (options?.transaction ?? this.databaseService).book.findFirst({
+      where: { id: bookId },
+      include: {
+        AuthorAssignation: {
+          include: {
+            Author: true,
+          },
+        },
+        BookChapter: true,
+      },
+    });
+  }
+
   async findBookByIdIncludingCategories(
     bookId: uuid,
     options?: RepositoryOptions,

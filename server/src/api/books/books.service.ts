@@ -74,6 +74,4 @@ export class BooksService {
       bookId,
     );
   }
-
-  async rescanBookByBookId(bookId: uuid) {}
 }

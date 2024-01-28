@@ -173,4 +173,30 @@ export class CatalogService {
       return book;
     });
   }
+
+  async rescanBookByBookId(bookId: uuid) {
+    return await this.databaseService.$transaction(async (transaction) => {
+      // Get the book
+      const {
+        AuthorAssignation: authorAssignation,
+        BookChapter: chapters,
+        ...book
+      } = await this.booksRepository.findBookWithChaptersAndAuthorsById(
+        bookId,
+        {
+          transaction,
+        },
+      );
+
+      // Generate datasource client
+      const datasourceClient = this.bookDatasourcesProvider.getDatasourceClient(
+        book.datasourceId,
+      );
+
+      // Read all chapters
+      const latestBookData = await datasourceClient.getBookInfo(
+        book.datasourceBookId,
+      );
+    });
+  }
 }
