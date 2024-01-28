@@ -1,4 +1,4 @@
-import { Inject, Injectable } from '@nestjs/common';
+import { ForbiddenException, Inject, Injectable } from '@nestjs/common';
 import { uuid } from '@tmw-universe/tmw-universe-types';
 import {
   BOOK_DATASOURCES_PROVIDER,
@@ -11,6 +11,8 @@ import { BookChaptersRepository } from '../../database/repositories/book-chapter
 import { AuthorsRepository } from '../../database/repositories/authors.repository';
 import { BookCategoriesRepository } from '../../database/repositories/book-categories.repository';
 import { WarehouseService } from '@tmw-universe/tmw-universe-nestjs-warehouse-sdk';
+import { BookScanRepository } from '../../database/repositories/book-scan.repository';
+import { addHours, isFuture } from 'date-fns';
 
 @Injectable()
 export class CatalogService {
@@ -23,6 +25,7 @@ export class CatalogService {
     private readonly authorsRepository: AuthorsRepository,
     private readonly bookCategoriesRepository: BookCategoriesRepository,
     private readonly warehouseService: WarehouseService,
+    private readonly bookScanRepository: BookScanRepository,
   ) {}
 
   async exploreBook(datasourceId: uuid, query: ExploreBooksFilterModel) {
@@ -176,6 +179,17 @@ export class CatalogService {
 
   async rescanBookByBookId(bookId: uuid) {
     return await this.databaseService.$transaction(async (transaction) => {
+      // Check if any rescan has been run
+      const latestScan = await this.bookScanRepository.findLatestScanByBookId(
+        bookId,
+        {
+          transaction,
+        },
+      );
+
+      if (latestScan && isFuture(addHours(latestScan.createdAt, 1)))
+        throw new ForbiddenException();
+
       // Get the book
       const { BookChapter: chapters, ...book } =
         await this.booksRepository.findBookWithChaptersAndAuthorsById(bookId, {
@@ -218,6 +232,9 @@ export class CatalogService {
           transaction,
         },
       );
+
+      // Create scan
+      await this.bookScanRepository.create(bookId, { transaction });
     });
   }
 }

@@ -141,4 +141,6 @@ model BookScan {
   // Associations
   Book   Book   @relation(fields: [bookId], references: [id])
   bookId String @db.VarChar(36)
+
+  @@index([createdAt])
 }
